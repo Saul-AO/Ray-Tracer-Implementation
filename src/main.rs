@@ -6,6 +6,10 @@ use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3, unit_vector};
 use std::io::{self, Write};
 
+//We use the ray_color in order for the ray to:
+//1. Calculate the ray from the 'eye' through the pixel
+//2. Determine which objects the ray intersects
+//3. Compute a color for the closest intersection point
 pub fn ray_color(r: Ray) -> Color {
     let unit_direction: Vec3 = unit_vector(r.direction());
     let a: f64 = 0.5 * (unit_direction.y() + 1.0);
@@ -49,8 +53,10 @@ fn main() -> io::Result<()> {
         - viewport_u / 2.0
         - viewport_v / 2.0;
     let pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
     //Create a lock beforehand to just print our data and unlock at the end
     let mut stdout = io::stdout().lock();
+
     //The '?' tells the compiler to try this. If it fails, crash. Else, keep going
     writeln!(stdout, "P3\n{image_width} {image_height}\n255")?;
 
@@ -60,17 +66,16 @@ fn main() -> io::Result<()> {
         io::stderr().flush()?; // Flush to ensure it displays immediately
 
         for i in 0..image_width {
-            // 1. Find the exact center of the current pixel
+            //Find the exact center of the current pixel
             let pixel_center =
                 pixel00_loc + (i as f64 * pixel_delta_u) + (j as f64 * pixel_delta_v);
 
-            // 2. Determine the direction of the ray from the camera to the pixel
+            //Determine the direction of the ray from the camera to the pixel
             let ray_direction = pixel_center - camera_center;
 
-            // 3. Create the Ray
-            // Use whatever instantiation matches your ray.rs file. E.g.:
+            //Create the Ray using 'camera_center' as origin and 'ray_direction' as direction
             let r = Ray::new(camera_center, ray_direction);
-            // 4. Determine the color using the ray
+            //Determine the color using the ray
             let pixel_color = ray_color(r);
             // Pass the locked stdout stream to our write_color function
             write_color(&mut stdout, pixel_color)?;

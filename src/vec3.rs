@@ -13,6 +13,7 @@ pub struct Vec3 {
 //Create an alias for Vec3
 pub type Point3 = Vec3;
 
+//Implement a 3D Vector
 impl Vec3 {
     pub fn new(val1: f64, val2: f64, val3: f64) -> Self {
         Self {
