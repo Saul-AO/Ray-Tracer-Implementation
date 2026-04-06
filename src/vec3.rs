@@ -125,7 +125,7 @@ impl Mul for Vec3 {
     }
 }
 
-// t * vec3
+// t * vec3 (float multiplied by Vec)
 impl Mul<Vec3> for f64 {
     type Output = Vec3;
 
@@ -134,7 +134,7 @@ impl Mul<Vec3> for f64 {
     }
 }
 
-// vec3 * t
+// vec3 * t (Vec multiplied by float)
 impl Mul<f64> for Vec3 {
     type Output = Vec3;
 
@@ -143,7 +143,7 @@ impl Mul<f64> for Vec3 {
     }
 }
 
-// vec3 / t
+// vec3 / t (Vec divided by a scalar)
 impl Div<f64> for Vec3 {
     type Output = Vec3;
 
