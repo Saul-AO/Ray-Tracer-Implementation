@@ -5,6 +5,7 @@ use std::io::Write;
 //Type alias for Color
 pub type Color = Vec3;
 
+//Create a function to write the color out
 pub fn write_color(out: &mut impl Write, pixel_color: Color) -> std::io::Result<()> {
     let r = pixel_color.x();
     let g = pixel_color.y();
