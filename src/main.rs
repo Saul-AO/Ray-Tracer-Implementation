@@ -1,6 +1,6 @@
 mod color;
+mod ray;
 mod vec3;
-
 use crate::color::{Color, write_color};
 use std::io::{self, Write};
 //Return type either returns void, or I/O Error
@@ -14,6 +14,7 @@ fn main() -> io::Result<()> {
     writeln!(stdout, "P3\n{image_width} {image_height}\n255")?;
 
     for j in 0..image_height {
+        //Included a progress reporter in order to indicate the output
         eprint!("\rScanlines remaining: {} ", image_height - j);
         io::stderr().flush()?; // Flush to ensure it displays immediately
 

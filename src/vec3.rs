@@ -1,4 +1,4 @@
-//Vec3 Header File
+//Vec3 Implementation
 //The biggest hurdle when translating C++ into Rust is some of the features in C++
 //We can use operator overloading in C++ but it works differently in Rust
 use std::fmt;
@@ -154,10 +154,12 @@ impl Div<f64> for Vec3 {
 
 //Utility Functions for Vector
 
+//Dot Product
 pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
     u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
 }
 
+//Cross Product
 pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
     Vec3::new(
         u.e[1] * v.e[2] - u.e[2] * v.e[1],
@@ -166,6 +168,7 @@ pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
     )
 }
 
+//Unit Vector Calculation
 pub fn unit_vector(v: Vec3) -> Vec3 {
     v / v.length()
 }
