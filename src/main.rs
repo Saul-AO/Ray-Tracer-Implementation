@@ -6,6 +6,7 @@ use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3, dot, unit_vector};
 use std::io::{self, Write};
 
+// Helper function in order to create a sphere
 pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
     let oc: Vec3 = center - r.origin();
     // * We will make a local variable to hold r.direction()

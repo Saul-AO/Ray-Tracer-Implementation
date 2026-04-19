@@ -1,4 +1,5 @@
 //Color Header File
+//Allows us to actually view the color on screen
 use crate::vec3::Vec3;
 use std::io::Write;
 
