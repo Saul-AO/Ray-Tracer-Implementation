@@ -1,6 +1,5 @@
 //Vec3 Implementation
-//The biggest hurdle when translating C++ into Rust is some of the features in C++
-//We can use operator overloading in C++ but it works differently in Rust
+//Foundation for other files to use
 use std::fmt;
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 

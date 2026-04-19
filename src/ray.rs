@@ -1,8 +1,6 @@
+//ray.rs: 'laser' that our camera shoots out
+//to figure out what color each pixel should be
 use crate::vec3::{Point3, Vec3};
-
-//Best to use something like macro derive to deal with default values
-//Struct created in order to implement origin and direction with
-//their respected types
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Ray {
     orig: Point3,

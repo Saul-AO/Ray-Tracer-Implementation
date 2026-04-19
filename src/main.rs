@@ -3,14 +3,38 @@ mod ray;
 mod vec3;
 use crate::color::{Color, write_color};
 use crate::ray::Ray;
-use crate::vec3::{Point3, Vec3, unit_vector};
+use crate::vec3::{Point3, Vec3, dot, unit_vector};
 use std::io::{self, Write};
+
+// Helper function in order to create a sphere
+pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
+    let oc: Vec3 = center - r.origin();
+    // * We will make a local variable to hold r.direction()
+    // * since we will need to pass by borrowing later
+    let dir: Vec3 = r.direction();
+    let a: f64 = dot(&dir, &dir);
+    let b: f64 = -2.0 * dot(&dir, &oc);
+    let c: f64 = dot(&oc, &oc) - (radius * radius);
+    let discriminant: f64 = b * b - 4.0 * a * c;
+    discriminant >= 0.0
+}
 
 //We use the ray_color in order for the ray to:
 //1. Calculate the ray from the 'eye' through the pixel
 //2. Determine which objects the ray intersects
 //3. Compute a color for the closest intersection point
+// * We need to update "Ray" to include sphere
 pub fn ray_color(r: Ray) -> Color {
+    if hit_sphere(
+        Point3 {
+            e: [0.0, 0.0, -1.0],
+        },
+        0.5,
+        &r,
+    ) {
+        return Color { e: [1.0, 0.0, 0.0] };
+    }
+
     let unit_direction: Vec3 = unit_vector(r.direction());
     let a: f64 = 0.5 * (unit_direction.y() + 1.0);
     (1.0 - a) * Color { e: [1.0, 1.0, 1.0] } + a * Color { e: [0.5, 0.7, 1.0] }
