@@ -7,7 +7,10 @@ use crate::vec3::{Point3, Vec3, dot, unit_vector};
 use std::io::{self, Write};
 
 // Helper function in order to create a sphere
-pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
+// We are now going to change the type: instead of being a
+// true/false, we will tell our function where the ray hits
+// the sphere
+pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> f64 {
     let oc: Vec3 = center - r.origin();
     // * We will make a local variable to hold r.direction()
     // * since we will need to pass by borrowing later
@@ -16,7 +19,12 @@ pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
     let b: f64 = -2.0 * dot(&dir, &oc);
     let c: f64 = dot(&oc, &oc) - (radius * radius);
     let discriminant: f64 = b * b - 4.0 * a * c;
-    discriminant >= 0.0
+    // We are changing the return type
+    if discriminant < 0.0 {
+        -1.0
+    } else {
+        (-b - discriminant.sqrt()) / (2.0 * a)
+    }
 }
 
 //We use the ray_color in order for the ray to:
@@ -25,14 +33,21 @@ pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
 //3. Compute a color for the closest intersection point
 // * We need to update "Ray" to include sphere
 pub fn ray_color(r: Ray) -> Color {
-    if hit_sphere(
-        Point3 {
-            e: [0.0, 0.0, -1.0],
-        },
-        0.5,
-        &r,
-    ) {
-        return Color { e: [1.0, 0.0, 0.0] };
+    let sphere_center: Vec3 = Point3 {
+        e: [0.0, 0.0, -1.0],
+    };
+    let t = hit_sphere(sphere_center, 0.5, &r);
+    //This check makes sure our ray hits the sphere in front of the camera
+    if t > 0.0 {
+        // Save the point of intersection
+        let hit_point: Vec3 = r.at(t);
+        let n: Vec3 = unit_vector(hit_point - sphere_center);
+
+        //Map the normal components from [-1, 1] to [0, 1]
+        return 0.5
+            * Color {
+                e: [n.x() + 1.0, n.y() + 1.0, n.z() + 1.0],
+            };
     }
 
     let unit_direction: Vec3 = unit_vector(r.direction());
