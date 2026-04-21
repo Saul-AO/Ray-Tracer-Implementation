@@ -13,11 +13,13 @@ impl HittableList {
             objects: Vec::new(),
         }
     }
-
+    // I feel that I do not really need a clear...
+    // Kept here in case
+    /*
     pub fn clear(&mut self) {
         self.objects.clear();
     }
-
+    */
     pub fn add(&mut self, object: Rc<dyn Hittable>) {
         self.objects.push(object);
     }

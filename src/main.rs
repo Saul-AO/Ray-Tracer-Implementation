@@ -1,60 +1,43 @@
 mod color;
-mod ray;
-mod vec3;
 mod hittable;
-mod sphere;
 mod hittable_list;
-use crate::color::{Color, write_color};
-use crate::ray::Ray;
-use crate::vec3::{Point3, Vec3, dot, unit_vector};
-use std::io::{self, Write};
+mod ray;
+mod rtweekend;
+mod sphere;
+mod vec3;
 
-// Helper function in order to create a sphere
-// We are now going to change the type: instead of being a
-// true/false, we will tell our function where the ray hits
-// the sphere
-pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> f64 {
-    let oc: Vec3 = center - r.origin();
-    // * We will make a local variable to hold r.direction()
-    // * since we will need to pass by borrowing later
-    let a: f64 = r.direction().length_squared();
-    let h: f64 = dot(&r.direction(), &oc);
-    let c: f64 = oc.length_squared() - radius * radius;
-    let discriminant = h * h - a * c;
-    // We are changing the return type
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (h - discriminant.sqrt()) / a
-    }
-}
+use crate::color::{Color, write_color};
+use crate::hittable::Hittable;
+use crate::hittable_list::HittableList;
+use crate::ray::Ray;
+use crate::rtweekend::INFINITY;
+use crate::sphere::Sphere;
+use crate::vec3::{Point3, Vec3, unit_vector};
+
+use std::io::{self, Write};
+use std::rc::Rc;
 
 //We use the ray_color in order for the ray to:
 //1. Calculate the ray from the 'eye' through the pixel
 //2. Determine which objects the ray intersects
 //3. Compute a color for the closest intersection point
-// * We need to update "Ray" to include sphere
-pub fn ray_color(r: Ray) -> Color {
-    let sphere_center: Vec3 = Point3 {
-        e: [0.0, 0.0, -1.0],
-    };
-    let t = hit_sphere(sphere_center, 0.5, &r);
-    //This check makes sure our ray hits the sphere in front of the camera
-    if t > 0.0 {
-        // Save the point of intersection
-        let hit_point: Vec3 = r.at(t);
-        let n: Vec3 = unit_vector(hit_point - sphere_center);
-
-        //Map the normal components from [-1, 1] to [0, 1]
+// * Ray now includes a variable 'world' of type array of Hittables
+pub fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
+    // 1. Check if the ray hits anything in the entire world
+    // We use 0.0 for t_min and INFINITY for t_max
+    if let Some(rec) = world.hit(r, 0.0, INFINITY) {
+        // If it hits, calculate the color based on the surface normal
         return 0.5
-            * Color {
-                e: [n.x() + 1.0, n.y() + 1.0, n.z() + 1.0],
-            };
+            * Color::new(
+                rec.normal.x() + 1.0,
+                rec.normal.y() + 1.0,
+                rec.normal.z() + 1.0,
+            );
     }
-
+    // 2. If it hit nothing, draw the background gradient
     let unit_direction: Vec3 = unit_vector(r.direction());
     let a: f64 = 0.5 * (unit_direction.y() + 1.0);
-    (1.0 - a) * Color { e: [1.0, 1.0, 1.0] } + a * Color { e: [0.5, 0.7, 1.0] }
+    (1.0 - a) * Color::new(1.0, 1.0, 1.0) + a * Color::new(0.5, 0.7, 1.0)
 }
 //Return type either returns void, or I/O Error
 fn main() -> io::Result<()> {
@@ -67,6 +50,14 @@ fn main() -> io::Result<()> {
     if image_height < 1 {
         image_height = 1;
     }
+    // World
+    let mut world = HittableList::new();
+
+    // Add the center sphere
+    world.add(Rc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
+
+    // Add a massive sphere below it to act as the ground
+    world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     //Camera
     let focal_length: f64 = 1.0;
@@ -116,8 +107,8 @@ fn main() -> io::Result<()> {
 
             //Create the Ray using 'camera_center' as origin and 'ray_direction' as direction
             let r = Ray::new(camera_center, ray_direction);
-            //Determine the color using the ray
-            let pixel_color = ray_color(r);
+            //Determine the color using the ray AND world
+            let pixel_color = ray_color(&r, &world);
             // Pass the locked stdout stream to our write_color function
             write_color(&mut stdout, pixel_color)?;
         }
