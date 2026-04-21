@@ -14,16 +14,15 @@ pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> f64 {
     let oc: Vec3 = center - r.origin();
     // * We will make a local variable to hold r.direction()
     // * since we will need to pass by borrowing later
-    let dir: Vec3 = r.direction();
-    let a: f64 = dot(&dir, &dir);
-    let b: f64 = -2.0 * dot(&dir, &oc);
-    let c: f64 = dot(&oc, &oc) - (radius * radius);
-    let discriminant: f64 = b * b - 4.0 * a * c;
+    let a: f64 = r.direction().length_squared();
+    let h: f64 = dot(&r.direction(), &oc);
+    let c: f64 = oc.length_squared() - radius * radius;
+    let discriminant = h * h - a * c;
     // We are changing the return type
     if discriminant < 0.0 {
         -1.0
     } else {
-        (-b - discriminant.sqrt()) / (2.0 * a)
+        (h - discriminant.sqrt()) / a
     }
 }
 
