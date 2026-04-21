@@ -1,6 +1,9 @@
 mod color;
 mod ray;
 mod vec3;
+mod hittable;
+mod sphere;
+mod hittable_list;
 use crate::color::{Color, write_color};
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3, dot, unit_vector};

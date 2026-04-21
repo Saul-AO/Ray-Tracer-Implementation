@@ -1,6 +1,6 @@
 use crate::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
-use create::vec3::{Point3, Vec3};
+use crate::vec3::{Point3, dot};
 
 pub struct Sphere {
     pub center: Point3,
@@ -18,7 +18,7 @@ impl Sphere {
 
 //We need to implement Hittable for our Sphere
 impl Hittable for Sphere {
-    fn hit(&self, r: &ray, ray_tmin: f64, ray_tmax: f64) -> Option<HitRecord> {
+    fn hit(&self, r: &Ray, ray_tmin: f64, ray_tmax: f64) -> Option<HitRecord> {
         let oc = self.center - r.origin();
         let a = r.direction().length_squared();
         let h = dot(&r.direction(), &oc);
@@ -39,8 +39,8 @@ impl Hittable for Sphere {
         }
         let t = root;
         let p = r.at(t);
-        let normal = (p - self.center) / self.radius;
+        let outward_normal = (p - self.center) / self.radius;
 
-        Some(HitRecord { t, p, normal })
+        Some(HitRecord::new(p, t, r, outward_normal))
     }
 }
