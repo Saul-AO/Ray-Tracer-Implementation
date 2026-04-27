@@ -7,6 +7,9 @@ creating the project using Rust.
 
 This is technically a path finder. Essentially, the program shoots a "ray" of light staight into a pixel on our screen and into the '3D scene'. The ray will either hit an object or not hit anything. When it hits an object, the program calculates how light should bounce off, scatter, or reflect based on the material and object. It will change the color of the pixel depending on whether it hit an object (draw the object) or not (draw the background). This allows us to create some pretty realistic images. (Examples of images in Demo)
 
+<img width="1839" height="907" alt="IMG_0135" src="https://github.com/user-attachments/assets/9e47fb58-47ae-47fa-b628-ca75d6ea77a7" />
+
+
 ### 📽️ Demo
 
 [Link to Demo](https://youtu.be/5jWeXGdOKQ4)
