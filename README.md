@@ -3,6 +3,10 @@
 This project is based on the "Ray Tracing" series by Peter Shirley. The original implementation is in C++, but this is my attempt at
 creating the project using Rust.
 
+### 📽️ Demo
+
+[Link to Demo](https://youtu.be/5jWeXGdOKQ4)
+
 ### 🚀 Motivation
 
 The reason that I used Rust rather than the langugage that the project originally used was to strengthen my knowledge with Rust
