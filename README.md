@@ -1,9 +1,9 @@
-##🦀 Ray-Tracer-Implementation
+## 🦀 Ray-Tracer-Implementation
 
 This project is based on the "Ray Tracing" series by Peter Shirley. The original implementation is in C++, but this is my attempt at
 creating the project using Rust.
 
-###🚀 Motivation
+### 🚀 Motivation
 
 The reason that I used Rust rather than the langugage that the project originally used was to strengthen my knowledge with Rust
 and understand the quirks that come with it (borrow-checker, ownership, etc.)
